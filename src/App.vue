@@ -1,7 +1,20 @@
 <template>
-  <header class="w-screen h-screen">
-    <div>
+  <div
+    class="bg-gray-100 dark:bg-gray-900 min-h-screen transition duration-300"
+  >
+    <MainWrap />
+    <div class="w-full max-w-6xl mx-auto px-4">
       <RouterView />
     </div>
-  </header>
+  </div>
 </template>
+
+<script>
+import MainWrap from "@/layouts/MainWrap.vue";
+
+export default {
+  components: {
+    MainWrap,
+  },
+};
+</script>
