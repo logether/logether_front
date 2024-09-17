@@ -30,7 +30,7 @@
             </template>
           </FeatureCard>
 
-          <FeatureCard feature="문의 남기기">
+          <FeatureCard feature="문의 남기기" @click="goToBoard">
             <template #icon>
               <img src="path-to-icon4.svg" alt="아이콘3" class="w-16 h-16" />
             </template>
@@ -130,6 +130,10 @@ export default {
       ];
 
       return tasks[dayIndex] || [];
+    },
+
+    goToBoard() {
+      this.$router.push({ name: "Board" });
     },
   },
 };
