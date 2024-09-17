@@ -19,17 +19,22 @@
         <BookOpenIcon class="w-5 h-5 mr-2" /> 가이드
       </button>
       <button
+        @click="showLoginModal = true"
         class="flex items-center bg-blue-500 text-white hover:bg-blue-600 px-4 py-2 rounded-md transition"
       >
         로그인
       </button>
     </nav>
+
+    <!-- 로그인 모달 -->
+    <LoginModal :show="showLoginModal" @close="showLoginModal = false" />
   </header>
 </template>
 
 <script>
 import { BookOpenIcon, SunIcon, MoonIcon } from "@heroicons/vue/24/outline";
 import { ref, onMounted, watch } from "vue";
+import LoginModal from "@/components/LoginModal.vue";
 
 export default {
   name: "MainWrap",
@@ -37,9 +42,11 @@ export default {
     BookOpenIcon,
     SunIcon,
     MoonIcon,
+    LoginModal,
   },
   setup() {
     const isDarkMode = ref(true);
+    const showLoginModal = ref(false); // 로그인 모달 상태
 
     function toggleDarkMode() {
       isDarkMode.value = !isDarkMode.value;
@@ -62,6 +69,7 @@ export default {
     return {
       isDarkMode,
       toggleDarkMode,
+      showLoginModal, // 모달 상태 반환
     };
   },
 };
