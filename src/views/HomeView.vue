@@ -18,7 +18,10 @@
       <!-- 주요 기능 섹션 -->
       <section class="flex items-center justify-center gap-12">
         <div class="grid grid-cols-3 gap-4">
-          <FeatureCard feature="공격대 조회 / 생성">
+          <FeatureCard
+            feature="공격대 조회 / 생성"
+            @click="showRaidModal = true"
+          >
             <template #icon>
               <img src="path-to-icon2.svg" alt="아이콘1" class="w-16 h-16" />
             </template>
@@ -72,22 +75,26 @@
         </p>
       </footer>
     </main>
+    <RaidModal :show="showRaidModal" @close="showRaidModal = false" />
   </div>
 </template>
 
 <script>
 import ScheduleCard from "../components/Home/ScheduleCard.vue";
 import FeatureCard from "../components/Home/FeatureCard.vue";
+import RaidModal from "@/components/Raid/RaidModal.vue";
 
 export default {
   name: "HomeView",
   components: {
     ScheduleCard,
     FeatureCard,
+    RaidModal,
   },
   data() {
     return {
       days: this.getThisWeekSchedule(),
+      showRaidModal: false,
     };
   },
   methods: {
