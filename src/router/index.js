@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import AboutView from "../views/AboutView.vue";
+import DistributorView from "../views/DistributorView.vue";
 
 const routes = [
   {
@@ -11,10 +12,15 @@ const routes = [
     path: "/about",
     component: AboutView,
   },
+  {
+    //파티 분배기 컴포넌트 추가
+    path: "/distributor",
+    component: DistributorView, 
+  }
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 
