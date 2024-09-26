@@ -11,7 +11,6 @@
         </button>
       </div>
       <form @submit.prevent="login">
-        <!-- 이메일 입력 -->
         <div class="mb-4">
           <input
             v-model="username"
@@ -21,7 +20,6 @@
             required
           />
         </div>
-        <!-- 비밀번호 입력 -->
         <div class="mb-6">
           <input
             v-model="password"
@@ -31,7 +29,6 @@
             required
           />
         </div>
-        <!-- 로그인 버튼 -->
         <div class="mb-4">
           <button
             type="submit"
@@ -40,40 +37,15 @@
             로그인
           </button>
         </div>
-        <!-- 회원가입/비밀번호 찾기 링크 -->
-        <div class="text-sm text-center text-gray-500 dark:text-gray-300 mb-6">
-          <a href="#" class="hover:underline mr-4">회원가입</a>
-          <a href="#" class="hover:underline">비밀번호 찾기</a>
-        </div>
-        <!-- 구분선 -->
-        <div class="relative flex justify-center items-center mb-6">
-          <span class="bg-gray-300 dark:bg-gray-500 w-20 h-px"></span>
-          <span
-            class="bg-white dark:bg-gray-800 px-4 text-gray-500 dark:text-gray-300 text-sm"
-            >또는</span
-          >
-          <span class="bg-gray-300 dark:bg-gray-500 w-20 h-px"></span>
-        </div>
-        <!-- 구글 로그인 버튼 -->
-        <div>
-          <button
-            type="button"
-            class="w-full flex items-center justify-center border border-gray-300 hover:bg-gray-50 px-4 py-3 rounded-lg transition"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
-              class="w-5 h-5 mr-3"
-              alt="Google logo"
-            />
-            구글 로그인으로 시작하기
-          </button>
-        </div>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import { useAuthStore } from "@/stores/auth";
+import { User } from "@/utils/repository";
+
 export default {
   props: {
     show: {
@@ -87,11 +59,26 @@ export default {
       password: "",
     };
   },
+  setup() {
+    const authStore = useAuthStore(); // Pinia 스토어 사용
+
+    return {
+      authStore,
+    };
+  },
   methods: {
-    login() {
-      // 로그인 처리 로직
-      console.log("로그인 시도:", this.username, this.password);
-      this.$emit("close");
+    async login() {
+      const res = await User.Login({
+        userId: this.username,
+        userPw: this.password,
+      });
+      if (res.accessToken) {
+        const accessToken = res.accessToken; // 토큰 저장
+        this.authStore.setAccessToken(accessToken);
+        this.$emit("loginSuccess"); // 부모 컴포넌트에 로그인 성공 알림
+      } else {
+        alert("로그인 실패. 다시 시도해주세요.");
+      }
     },
     close() {
       this.$emit("close");
