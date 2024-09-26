@@ -59,7 +59,9 @@
                                 :key="index"
                                 :synergy_char="synergy.charList"
                                 :synergy_name="synergy.name"
+                                :parties="parties"
                                 @add-character="addCharacterToSynergy(synergy.name, $event)"
+                                @add-character-to-party="addCharacterToParty" 
                             />
                         </div>
                      </div>
@@ -110,6 +112,7 @@
                                     :parties=parties
                                     :isSearchResult="true"
                                      @add-character="addCharacterToSynergy"
+                                    
                                     class="character-card" 
                                 />
                             </div>
@@ -147,10 +150,11 @@ export default {
                 {
                     num: 1,
                     charList: [
+                        /*
                         { char_level: '1610', char_class: '직업1',char_name: '닉네임1' },
                         { char_level: '1620', char_class: '직업2',char_name: '닉네임2' },
                         { char_level: '1630', char_class: '직업3',char_name: '닉네임3' },
-                        { char_level: '1640', char_class: '직업4',char_name: '닉네임4' },
+                        { char_level: '1640', char_class: '직업4',char_name: '닉네임4' },*/
                     ],
                 },
             ],
@@ -269,6 +273,7 @@ export default {
             }
         },
         addCharacterToSynergy(character) {
+
             // 캐릭터의 직업과 일치하는 시너지 카드를 찾기
             const matchingSynergies = this.synergies.filter(synergy => 
                 synergy.jobs.includes(character.class)
@@ -283,8 +288,29 @@ export default {
                     });
                     console.log(`${character.class}가 ${matchingSynergy.name} 시너지 카드에 추가되었습니다.`);
                 });
+
             } else {
                 console.error(`직업 ${character.class}에 맞는 시너지 카드가 없습니다.`);
+            }
+        },
+        addCharacterToParty(partyNum, character) {
+            console.log(`addCharacterToParty 호출됨: ${partyNum}, ${JSON.stringify(character)}`);
+            
+            if (!character || !character.char_level || !character.char_class || !character.char_name) {
+                console.error('character가 정의되지 않았거나 필수 속성이 없습니다.');
+                return; // return하여 오류 발생 방지
+            }
+            
+            const party = this.parties.find(p => p.num === parseInt(partyNum));
+            if (party) {
+                party.charList.push({
+                    char_level: character.char_level,
+                    char_class: character.char_class,
+                    char_name: character.char_name,
+                });
+                console.log(`${character.char_name}가 ${partyNum}파티에 추가되었습니다.`);
+            } else {
+            console.error(`파티 ${partyNum}를 찾을 수 없습니다.`);
             }
         },
     },

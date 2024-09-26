@@ -14,12 +14,12 @@
               <div class="flex-7 mx-2 flex justify-between items-center">
                   <span class="text-2xl font-bold text-stone-800">{{ char_name }}</span>
                   <button v-if="isSearchResult" @click="addCharacter" class="bg-green-500 text-white px-2 py-1 rounded">
-                      추가
+                    선택
                   </button>
                   <!-- 드롭다운 메뉴: 시너지 카드에서만 표시 -->
                   <div v-if="!isSearchResult && isInSynergyCard" class="relative">
                     <div class="bg-blue-500 text-white px-2 py-1 rounded mt-1 cursor-pointer" @click="toggleDropdown">
-                        파티 선택
+                        {{ selectedPartyNum ? selectedPartyNum + ' 파티' : '파티 선택' }}
                     </div>
                     <div v-if="isDropdownOpen" class="dropdown-menu absolute bg-white border-2 border-gray-300 shadow-lg">
                         <ul>
@@ -68,14 +68,17 @@ export default {
   data() {
       return {
           isDropdownOpen: false,
+          selectedPartyNum: null,   //선택한 파티 번호 저장 변수
       };
   },
   methods: {
       addCharacter() {
+
           this.$emit('add-character', {
               level: this.char_level,
               class: this.char_class,
               name: this.char_name,
+              partyNum: this.selectedPartyNum,
           });
       },
       toggleDropdown() {
@@ -83,9 +86,24 @@ export default {
           console.log(this.parties);
       },
       selectParty(partyNum) {
+          this.selectedPartyNum=partyNum;
           this.isDropdownOpen = false; // 드롭다운 닫기
+
+          // 이벤트 발생 로그 추가
+          console.log(`이벤트 발생: add-character-to-party, 파티 번호: ${partyNum}, 캐릭터: ${this.char_name}`);
+
           // 선택한 파티에 대한 추가 작업을 여기에 구현
-          console.log(`파티 ${partyNum}가 선택되었습니다.`);
+          const characterData = {
+            char_level: this.char_level, // char_level
+            char_class: this.char_class,   // char_class
+            char_name: this.char_name,     // char_name
+        };
+          console.log(`이벤트 발생: add-character-to-party, 파티 번호: ${partyNum}, 캐릭터:`, characterData);
+
+          // 선택한 파티에 대한 추가 작업을 여기에 구현
+          this.$emit('add-character-to-party', partyNum, characterData);
+
+          console.log(`파티 ${partyNum}에 캐릭터가 추가되었습니다.`);
       },
   },
 };
