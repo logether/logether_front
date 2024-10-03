@@ -1,32 +1,42 @@
 <template>
-  <div>
-    <div
-      class="text-black dark:text-white flex items-center justify-between pb-2 border-b border-gray-300 mb-2"
-    >
-      <h2 class="text-lg font-bold">{{ date }}</h2>
-      <span class="text-sm text-gray-500">{{ dayOfWeek }}</span>
+  <div
+    class="flex flex-col justify-between h-full border border-gray-300 dark:border-gray-600 p-4 rounded-lg"
+  >
+    <!-- 날짜와 요일 -->
+    <div class="text-center">
+      <h2 class="text-lg font-bold text-gray-800 dark:text-white">
+        {{ date }}
+      </h2>
+      <span class="text-sm text-gray-500 dark:text-gray-400">{{
+        dayOfWeek
+      }}</span>
     </div>
-    <ul>
+
+    <!-- 일정 목록 -->
+    <ul class="mt-4">
       <li
         v-for="(task, taskIndex) in tasks"
         :key="taskIndex"
-        class="text-sm py-1 flex items-center justify-between dark:text-white"
-        :class="{
-          'line-through text-gray-400 dark:text-white': task.completed, // 완료된 일정 줄 긋기
-        }"
+        class="flex justify-between items-center mb-2"
       >
-        <!-- 중요 일정 강조 아이콘 -->
-        <div class="flex items-center">
-          <span v-if="task.important" class="mr-2 text-yellow-500">✨</span>
+        <button
+          class="text-left w-full bg-yellow-100 dark:bg-yellow-700 rounded-lg px-2 py-1 text-sm"
+          :class="{
+            'line-through text-gray-500 dark:text-gray-300': task.completed,
+          }"
+        >
           {{ task.text }}
-        </div>
-        <!-- 완료 여부 체크박스 오른쪽 끝 -->
-        <div class="flex items-center">
-          <input type="checkbox" class="ml-auto" v-model="task.completed" />
-          <span v-if="task.completed" class="ml-2 text-gray-500">&#x2714;</span>
-        </div>
+        </button>
       </li>
     </ul>
+
+    <!-- 일정이 없을 경우 표시할 빈 공간 -->
+    <div
+      v-if="tasks.length === 0"
+      class="flex-1 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500"
+    >
+      <span>일정 없음</span>
+    </div>
   </div>
 </template>
 

@@ -8,3 +8,11 @@ export const User = {
       .catch((err) => err.response);
   },
 };
+
+export const Raid = {
+  RaidAdd: async (data) => {
+    return LogAPI.post("/raid/raidAdd", data)
+      .then((res) => res.data)
+      .catch((err) => err.response);
+  },
+};

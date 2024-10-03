@@ -75,6 +75,8 @@ export default {
       if (res.accessToken) {
         const accessToken = res.accessToken; // 토큰 저장
         this.authStore.setAccessToken(accessToken);
+        console.log("스토어 상태:", this.authStore);
+        console.log("디코딩된 토큰 정보:", this.authStore.decodedToken);
         this.$emit("loginSuccess"); // 부모 컴포넌트에 로그인 성공 알림
       } else {
         alert("로그인 실패. 다시 시도해주세요.");

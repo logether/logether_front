@@ -16,7 +16,6 @@
 
       <!-- 공격대 조회 폼 -->
       <form v-if="isSearching" @submit.prevent="searchRaid">
-        <!-- 공격대 이름 입력 -->
         <div class="mb-4">
           <input
             v-model="raidName"
@@ -27,10 +26,9 @@
           />
         </div>
 
-        <!-- 비밀번호 입력 -->
         <div class="mb-6">
           <input
-            v-model="password"
+            v-model="raidPw"
             type="password"
             placeholder="비밀번호"
             class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
@@ -38,7 +36,6 @@
           />
         </div>
 
-        <!-- 조회하기 버튼 -->
         <div class="mb-4">
           <button
             type="submit"
@@ -48,7 +45,6 @@
           </button>
         </div>
 
-        <!-- 구분선 -->
         <div class="relative flex justify-center items-center mb-4">
           <span class="bg-gray-300 dark:bg-gray-500 w-20 h-px"></span>
           <span
@@ -58,7 +54,6 @@
           <span class="bg-gray-300 dark:bg-gray-500 w-20 h-px"></span>
         </div>
 
-        <!-- 공격대 만들기 버튼 -->
         <div>
           <button
             type="button"
@@ -72,18 +67,6 @@
 
       <!-- 공격대 생성 폼 -->
       <form v-else @submit.prevent="createRaid">
-        <!-- 공대장 이름 입력 -->
-        <div class="mb-4">
-          <input
-            v-model="raidLeader"
-            type="text"
-            placeholder="공대장 이름"
-            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
-            required
-          />
-        </div>
-
-        <!-- 공격대 이름 입력 -->
         <div class="mb-4">
           <input
             v-model="raidName"
@@ -94,10 +77,9 @@
           />
         </div>
 
-        <!-- 비밀번호 입력 -->
         <div class="mb-4">
           <input
-            v-model="password"
+            v-model="raidPw"
             type="password"
             placeholder="비밀번호"
             class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
@@ -105,10 +87,9 @@
           />
         </div>
 
-        <!-- 인원 수 입력 -->
         <div class="mb-4">
           <input
-            v-model="memberCount"
+            v-model="raidCnt"
             type="number"
             min="1"
             placeholder="인원 수 (기본값: 16명)"
@@ -116,21 +97,19 @@
           />
         </div>
 
-        <!-- 링크 입력 -->
         <div class="mb-4">
           <input
-            v-model="link"
-            type="url"
+            v-model="raidPage"
+            type="text"
             placeholder="공격대 링크"
             class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
           />
         </div>
 
-        <!-- 체크박스 -->
         <div class="mb-6">
           <label class="inline-flex items-center">
             <input
-              v-model="allowLinkAccess"
+              v-model="raidEntry"
               type="checkbox"
               class="form-checkbox h-5 w-5 text-indigo-600"
             />
@@ -140,7 +119,6 @@
           </label>
         </div>
 
-        <!-- 생성하기 버튼 -->
         <div class="mb-4">
           <button
             type="submit"
@@ -150,7 +128,6 @@
           </button>
         </div>
 
-        <!-- 구분선 -->
         <div class="relative flex justify-center items-center mb-4">
           <span class="bg-gray-300 dark:bg-gray-500 w-20 h-px"></span>
           <span
@@ -160,7 +137,6 @@
           <span class="bg-gray-300 dark:bg-gray-500 w-20 h-px"></span>
         </div>
 
-        <!-- 공격대 조회로 돌아가기 버튼 -->
         <div>
           <button
             type="button"
@@ -177,6 +153,8 @@
 
 <script>
 import { ref } from "vue";
+import { useAuthStore } from "@/stores/auth";
+import { Raid } from "@/utils/repository"; // Axios API import
 
 export default {
   props: {
@@ -186,40 +164,44 @@ export default {
     },
   },
   setup() {
-    const isSearching = ref(true); // 조회 모드가 기본값
+    const isSearching = ref(true);
     const raidName = ref("");
-    const password = ref("");
-    const raidLeader = ref("");
-    const memberCount = ref(16); // 기본값: 16명
-    const link = ref("");
-    const allowLinkAccess = ref(false);
+    const raidPw = ref("");
+    const raidCnt = ref(16);
+    const raidPage = ref("");
+    const raidEntry = ref(false);
+
+    const authStore = useAuthStore();
+    const userId = authStore.decodedToken?.sub;
 
     // 공격대 조회
     const searchRaid = () => {
-      console.log("공격대 조회 시도:", raidName.value, password.value);
+      console.log("공격대 조회 시도:", raidName.value, raidPw.value);
       alert(`공격대 "${raidName.value}" 조회 시도`);
     };
 
     // 공격대 생성
-    const createRaid = () => {
+    const createRaid = async () => {
       const raidData = {
-        raidLeader: raidLeader.value,
+        userId,
         raidName: raidName.value,
-        password: password.value,
-        memberCount: memberCount.value,
-        link: link.value,
-        allowLinkAccess: allowLinkAccess.value,
+        raidPw: raidPw.value,
+        raidCnt: raidCnt.value,
+        raidEntry: raidEntry.value ? 1 : 0,
+        raidPage: raidPage.value,
       };
-      console.log("공격대 생성 시도:", raidData);
-      alert(`공격대 "${raidName.value}" 생성 시도`);
+
+      const response = await Raid.RaidAdd(raidData); // Axios로 서버에 전송
+      console.log("공격대 생성 응답:", response);
+      alert(`공격대 "${raidName.value}" 생성 성공`);
     };
 
-    // 조회 -> 생성 모드로 전환
+    // 조회 -> 생성 모드 전환
     const switchToCreate = () => {
       isSearching.value = false;
     };
 
-    // 생성 -> 조회 모드로 돌아가기
+    // 생성 -> 조회 모드 전환
     const switchToSearch = () => {
       isSearching.value = true;
     };
@@ -227,15 +209,15 @@ export default {
     return {
       isSearching,
       raidName,
-      password,
-      raidLeader,
-      memberCount,
-      link,
-      allowLinkAccess,
+      raidPw,
+      raidCnt,
+      raidPage,
+      raidEntry,
       searchRaid,
       createRaid,
       switchToCreate,
       switchToSearch,
+      userId,
     };
   },
   methods: {

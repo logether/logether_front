@@ -1,17 +1,19 @@
+import { useAuthStore } from "@/stores/auth";
 import axios from "axios";
 
 const LogAPI = axios.create({
   baseURL: "http://localhost:8088/",
 });
 
-const Token = window.localStorage.getItem("accessToken") || null;
-
-if (Token) {
-  LogAPI.defaults.headers.Authorization = "Bearer " + Token;
-}
-
 LogAPI.interceptors.request.use(
   (config) => {
+    const authStore = useAuthStore();
+    const token = authStore.accessToken || localStorage.getItem("accessToken");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
     console.log("Log API 요청:", config);
     return config;
   },
